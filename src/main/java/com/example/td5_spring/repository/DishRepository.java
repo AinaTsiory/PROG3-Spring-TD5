@@ -42,7 +42,9 @@ public class DishRepository {
                 conn.setAutoCommit(true);
             }
         }
-    }public List<Dish> saveAll(List<DishCreateDTO> dtos) throws SQLException {
+    }
+
+    public List<Dish> saveAll(List<DishCreateDTO> dtos) throws SQLException {
         List<Dish> createdDishes = new ArrayList<>();
         String checkSql = "SELECT COUNT(*) FROM dish WHERE name = ?";
         // Utilisation de selling_price et du cast vers dish_type
