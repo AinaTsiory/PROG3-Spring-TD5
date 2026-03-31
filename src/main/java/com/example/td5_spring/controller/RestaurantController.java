@@ -25,13 +25,13 @@ public class RestaurantController {
     }
 
     // a) GET /ingredients
-    @GetMapping("/ingredients")
+    @GetMapping("/ingredient")
     public List<Ingredient> getAllIngredients() {
         return ingredientRepo.findAll();
     }
 
     // b) GET /ingredients/{id}
-    @GetMapping("/ingredients/{id}")
+    @GetMapping("/ingredient/{id}")
     public ResponseEntity<?> getIngredient(@PathVariable Integer id) {
         try {
             return ResponseEntity.ok(ingredientRepo.findById(id));
@@ -41,7 +41,7 @@ public class RestaurantController {
     }
 
     // c) & d) GET /ingredients/{id}/stock
-    @GetMapping("/ingredients/{id}/stock")
+    @GetMapping("/ingredient/{id}/stock")
     public ResponseEntity<?> getStock(
             @PathVariable Integer id,
             @RequestParam(required = false) String at,
@@ -61,7 +61,7 @@ public class RestaurantController {
     }
 
     // e) PUT /dishes/{id}/ingredients
-    @PutMapping("/dishes/{id}/ingredients")
+    @PutMapping("/dish/{id}/ingredient")
     public ResponseEntity<?> updateDish(@PathVariable Integer id, @RequestBody List<Ingredient> ingredients) {
         try {
             dishRepo.findById(id); // Vérifie 404

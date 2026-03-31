@@ -13,9 +13,9 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver"); // Ou ton driver
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/ton_db");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/mini_dish_db");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("password");
+        dataSource.setPassword("aina");
         return dataSource;
     }
 
