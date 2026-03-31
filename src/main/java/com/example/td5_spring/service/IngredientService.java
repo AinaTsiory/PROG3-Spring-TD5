@@ -1,6 +1,7 @@
 package com.example.td5_spring.service;
 
 import com.example.td5_spring.entity.StockValue;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

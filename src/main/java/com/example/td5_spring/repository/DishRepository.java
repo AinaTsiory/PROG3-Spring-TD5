@@ -1,7 +1,6 @@
 package com.example.td5_spring.repository;
 
 import com.example.td5_spring.entity.Dish;
-import com.example.td5_spring.entity.Model;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
