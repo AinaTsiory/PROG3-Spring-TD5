@@ -1,31 +1,45 @@
 package com.example.td5_spring.repository;
 
-import com.example.td5_spring.entity.Dish;
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.example.td5_spring.config.DataSourceConfig;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
-
 @Repository
 public class DishRepository {
-    private final JdbcTemplate jdbc;
-    public DishRepository(JdbcTemplate jdbc) { this.jdbc = jdbc; }
 
-    public Dish findById(Integer id) {
-        return jdbc.queryForObject("SELECT id, name FROM dish WHERE id = ?", (rs, row) -> {
-            Dish d = new Dish();
-            d.setId(rs.getInt("id"));
-            d.setName(rs.getString("name"));
-            return d;
-        }, id);
-    }
+    public void updateAssociations(Integer dishId, List<Integer> ingredientIds) throws SQLException {
+        String deleteSql = "DELETE FROM dish_ingredient WHERE id_dish = ?";
+        String insertSql = "INSERT INTO dish_ingredient (id_dish, id_ingredient) VALUES (?, ?)";
 
-    public void updateAssociations(Integer dishId, List<Integer> ingredientIds) {
-        jdbc.update("DELETE FROM dish_ingredient WHERE id_dish = ?", dishId);
-        for (Integer ingId : ingredientIds) {
-            jdbc.update("INSERT INTO dish_ingredient (id_dish, id_ingredient) VALUES (?, ?)", dishId, ingId);
+        try (Connection conn = DataSourceConfig.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+                 PreparedStatement insertStmt = conn.prepareStatement(insertSql)) {
+
+                deleteStmt.setInt(1, dishId);
+                deleteStmt.executeUpdate();
+
+                if (ingredientIds != null && !ingredientIds.isEmpty()) {
+                    for (Integer ingId : ingredientIds) {
+                        insertStmt.setInt(1, dishId);
+                        insertStmt.setInt(2, ingId);
+                        insertStmt.addBatch(); // On prépare l'envoi groupé
+                    }
+                    insertStmt.executeBatch(); // On envoie tout d'un coup pour la performance
+                }
+
+                conn.commit();
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
         }
     }
 }
